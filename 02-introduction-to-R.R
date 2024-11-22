@@ -38,7 +38,7 @@ area_hectares <- 2.5
 area_acres <- 2.47 * area_hectares
 area_hectares <- 50
 
-#' EX
+#' ++ Exercise ++
 #' What do you think is the current content of the object area_acres? 123.5 or 6.175?
 
 #' Comments
@@ -47,9 +47,10 @@ area_hectares <- 1.0               # land area in hectares
 area_acres <- area_hectares * 2.47 # convert to acres
 area_acres                         # print land area in acres.
 
+# add/remove comments:
 # Ctrl + Shift + C
 
-#' Exercise
+#' ++ Exercise ++
 #' Create two variables r_length and r_width and assign them values. It should be 
 #' noted that, because length is a built-in R function, R Studio might add “()” 
 #' after you type length and if you leave the parentheses you will get unexpected
@@ -78,10 +79,10 @@ round(3.14159, 2)
 # explicit parameters in mixed order
 round(digits = 2, x = 3.14159)
 
-# Exercise
+# ++ Exercise ++
 # Type in ?round at the console and then look at the output in the Help pane.
-# What other functions exist that are similar to round? How do you use the digits
-# parameter in the round function?
+# What other functions exist that are similar to round? How do you use the 
+# digits parameter in the round function?
 
 # Vectors and data types
 
@@ -96,9 +97,9 @@ respondent_wall_type
 length(hh_members)
 length(respondent_wall_type)
 
-# what kind of objects are the elements?
-class(hh_members)
-class(respondent_wall_type)
+# what is the type of an object?
+typeof(hh_members)
+typeof(respondent_wall_type)
 
 # structure of an object and its elements
 str(hh_members)
@@ -114,23 +115,27 @@ possessions
 #' "character"
 #' "numeric" (or "double")
 #' "logical" for TRUE and FALSE (the boolean data type)
-#' "integer" for integer numbers (e.g., 2L, the L indicates to R that it's an integer)
-#' "complex" to represent complex numbers with real and imaginary parts (e.g., 1 + 4i)
+#' "integer" for integer numbers (e.g., 2L, the L indicates to R that it's
+#'           an integer)
+#' "complex" to represent complex numbers with real and imaginary parts
+#'           (e.g., 1 + 4i)
 #' "raw" for bitstreams
 #' 
 
-# Exercise
-# We’ve seen that atomic vectors can be of type character, numeric (or double), integer, 
-# and logical. But what happens if we try to mix these types in a single vector?
+# ++ Exercise ++
+#' We’ve seen that atomic vectors can be of type character, numeric (or 
+#' double), integer, and logical. But what happens if we try to mix these
+#' types in a single vector?
 
-#' What will happen in each of these examples? (hint: use class() to check the data type
-#' of your objects):
+#' What will happen in each of these examples? (hint: use class() to 
+#' check the data type of your objects):
 num_char <- c(1, 2, 3, "a")
 num_logical <- c(1, 2, 3, TRUE)
 char_logical <- c("a", "b", "c", TRUE)
 tricky <- c(1, 2, 3, "4")
 
-#' How many values in combined_logical are "TRUE" (as a character) in the following example:
+#' How many values in combined_logical are "TRUE" (as a character) in
+#' the following example:
 num_logical <- c(1, 2, 3, TRUE)
 char_logical <- c("a", "b", "c", TRUE)
 combined_logical <- c(num_logical, char_logical)
@@ -197,20 +202,20 @@ max(rooms, na.rm = TRUE)
 ## The ! character is also called the NOT operator
 rooms[!is.na(rooms)]
 
-# Count the number of missing values.
-# The output of is.na() is a logical vector (TRUE/FALSE equivalent to 1/0) so the 
-# sum() function here is effectively counting
+#' Count the number of missing values.
+#' The output of is.na() is a logical vector (TRUE/FALSE equivalent to 1/0)
+#' so the sum() function here is effectively counting
 sum(is.na(rooms))
 
-#' Returns the object with incomplete cases removed. The returned object is an atomic
-#'  vector of type `"numeric"` (or `"double"`).
+#' Returns the object with incomplete cases removed. The returned object is
+#' an atomic vector of type `"numeric"` (or `"double"`).
 na.omit(rooms)
 
-#' Extract those elements which are complete cases. The returned object is an atomic
-#' vector of type `"numeric"` (or `"double"`).
+#' Extract those elements which are complete cases. The returned object is
+#' an atomic vector of type `"numeric"` (or `"double"`).
 rooms[complete.cases(rooms)]
 
-#' Exercise
+#' ++ Exercise ++
 #' Using this vector of rooms, create a new vector with the NAs removed.
 rooms <- c(1, 2, 1, 1, NA, 3, 1, 3, 2, 1, 1, 8, 3, 1, NA, 1)
 

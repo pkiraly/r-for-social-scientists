@@ -20,7 +20,7 @@ interviews <- read_csv(
 
 #' watch the data
 interviews
-View(interviews)
+view(interviews)
 head(interviews)
 
 # A tibble: 131 x 14
@@ -111,33 +111,36 @@ interviews[, "village"]
 interviews[["village"]]
 interviews$village
 
-#' Exercise
+#' ++ Exercise ++
 #' 
-#' 1. Create a tibble (interviews_100) containing only the data in row 100 of the
-#'    interviews dataset.
+#' 1. Create a tibble (interviews_100) containing only the data in row 100
+#'    of the interviews dataset.
 #'    
 #' 2. Notice how nrow() gave you the number of rows in the tibble?
 #'  - Use that number to pull out just that last row in the tibble.
-#'  - Compare that with what you see as the last row using tail() to make sure it’s 
-#'    meeting expectations.
+#'  - Compare that with what you see as the last row using tail() to make
+#'    sure it’s meeting expectations.
 #'  - Pull out that last row using nrow() instead of the row number.
 #'  - Create a new tibble (interviews_last) from that last row.
 #' 
-#' 3. Using the number of rows in the interviews dataset that you found in question 2,
-#'    extract the row that is in the middle of the dataset. Store the content of this
-#'    middle row in an object named interviews_middle. (hint: This dataset has an odd
-#'    number of rows, so finding the middle is a bit trickier than dividing n_rows by 2.
-#'    Use the median() function and what you’ve learned about sequences in R to extract
-#'    the middle row!
+#' 3. Using the number of rows in the interviews dataset that you found
+#'    in question 2, extract the row that is in the middle of the dataset.
+#'    Store the content of this middle row in an object named 
+#'    interviews_middle. (hint: This dataset has an odd number of rows,
+#'    so finding the middle is a bit trickier than dividing n_rows by 2.
+#'    Use the median() function and what you’ve learned about sequences
+#'    in R to extract the middle row!
 #'    
-#' 4. Combine nrow() with the - notation above to reproduce the behavior of 
-#'    head(interviews), keeping just the first through 6th rows of the interviews dataset.
+#' 4. Combine nrow() with the - notation above to reproduce the behavior
+#'    of head(interviews), keeping just the first through 6th rows of
+#'    the interviews dataset.
 
 #' Factors
 #' - deal with categorical data
 #' - stored as integers associated with labels
 #' - can be ordered or unordered
-#' - Once created, factors can only contain a pre-defined set of values, known as levels
+#' - Once created, factors can only contain a pre-defined set of values,
+#'   known as levels
 #' - by default, R always sorts levels in alphabetical order
 
 respondent_floor_type <- factor(c("earth", "cement", "cement", "earth"))
@@ -156,9 +159,12 @@ respondent_floor_type <- factor(respondent_floor_type,
 # after re-ordering
 respondent_floor_type
 
-# change category
-levels(respondent_floor_type)[2] <- "brick"
 levels(respondent_floor_type)
+
+# change category
+respondent_floor_type <- fct_recode(respondent_floor_type, brick = "cement")
+levels(respondent_floor_type)
+
 respondent_floor_type
 
 # So far, factor is unordered, like a nominal variable
@@ -182,11 +188,14 @@ as.numeric(as.character(year_fct))
 
 # recommended way to convert a numeric factor to numeric vector
 as.numeric(levels(year_fct))[year_fct]
+
 # steps:
-levels(year_fct) # obtain all the factor levels
-as.numeric(levels(year_fct)) # convert these levels to numeric values
-#' access these numeric values using the underlying integers of the vector year_fct 
-#' inside the square brackets
+#' 1. obtain all the factor levels
+levels(year_fct) 
+#' 2. convert these levels to numeric values
+as.numeric(levels(year_fct)) 
+#' 3. access these numeric values using the underlying integers of the
+#'  vector year_fct inside the square brackets
 as.numeric(levels(year_fct))[year_fct]
 
 #' Renaming factors
@@ -213,10 +222,14 @@ memb_assoc[is.na(memb_assoc)] <- "undetermined"
 
 # convert it into a factor
 memb_assoc <- as.factor(memb_assoc)
+# let's see what it looks like
 memb_assoc
+
+## bar plot of the number of interview respondents who were
+## members of irrigation association:
 plot(memb_assoc)
 
-#' Exercise
+#' ++ Exercise ++
 #' 1. Rename the levels of the factor to have the first letter in uppercase:
 #'    “No”,”Undetermined”, and “Yes”.
 #'    

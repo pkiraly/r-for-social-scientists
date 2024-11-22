@@ -95,8 +95,10 @@ dir.create("data")
 dir.create("data_output")
 dir.create("fig_output")
 
-download.file("https://ndownloader.figshare.com/files/11492171",
-              "data/SAFI_clean.csv", mode = "wb")
+download.file(
+  "https://raw.githubusercontent.com/datacarpentry/r-socialsci/main/episodes/data/SAFI_clean.csv",
+  "data/SAFI_clean.csv", mode = "wb"
+)
 
 #' Interacting with R
 #' * instructions are commands
