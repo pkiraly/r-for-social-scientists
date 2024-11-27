@@ -1,0 +1,149 @@
+---
+title: "My Awesome Report"
+author: "Péter Király"
+date: "2024-11-27"
+output: html_document
+---
+## Introduction
+bold: **bold** or __bold__
+
+italics: *italics*, or _italics_
+
+bold and italics: ***really***, or ___really___ or **_really_**, **_really_**.
+
+code-type: `code-type`
+
+a list:
+
+- village
+- interview_date
+- no_members
+- years_liv
+- respondent_wall_type
+- rooms
+
+ordered list:
+
+1. village
+2. interview_date
+3. no_members
+4. years_liv
+5. respondent_wall_type
+6. rooms
+
+And nested items by tab-indenting:
+
+- village
+  + Name of village
+- interview_date
+  + Date of interview
+- no_members
+  + How many family members lived in a house
+- years_liv
+  + How many years respondent has lived in village or neighbouring village
+- respondent_wall_type
+  + Type of wall of house
+- rooms
+  + Number of rooms in house
+
+Reference: https://www.markdownguide.org/basic-syntax
+
+R code:
+
+```{r chunk-name}
+"Here is where you place the R code that you want to run."
+```
+
+a chunk called "setup". Do not show the output
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(here)
+interviews <- read_csv(here("data/SAFI_clean.csv"), na = "NULL")
+```
+
+# Insert table
+
+```{r table, echo = FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs)) %>%
+  knitr::kable(caption = "We can also add a caption.", 
+               col.names = c("Village", "Member Association", 
+                             "Mean Number of Members"))
+```
+
+# Customising chunk output
+
+- eval (TRUE or FALSE): Whether or not the code within the code chunk should be run.
+- echo (TRUE or FALSE): Choose if you want to show your code chunk in the output document. echo = TRUE will show the code chunk.
+- include (TRUE or FALSE): Choose if the output of a code chunk should be included in the document. FALSE means that your code will run, but will not show up in the document.
+- warning (TRUE or FALSE): Whether or not you want your output document to display potential warning messages produced by your code.
+- message (TRUE or FALSE): Whether or not you want your output document to display potential messages produced by your code.
+- fig.align (default, left, right, center): Where the figure from your R code chunk should be output on the page
+
+
+Exercise
+
+Play around with the different options in the chunk with the code for the table, and re-Knit to see what each option does to the output.
+
+What happens if you use eval = FALSE and echo = FALSE? What is the difference between this and include = FALSE?
+
+# In-line R code
+
+today’s date is `r Sys.Date()`, 
+
+```{r}
+# create a summary data frame with the mean household size by village
+mean_household <- interviews %>%
+    group_by(village) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+
+# and select the village we want to use
+mean_chirodzo <- mean_household %>%
+  filter(village == "Chirodzo")
+```
+
+The average household size in the village of Chirodzo is `r round(mean_chirodzo$mean_no_membrs, 2)`
+
+# Plots
+
+```{r}
+## Not run, but can be used to load in data from previous lesson!
+interviews_plotting <- interviews %>%
+  ## pivot wider by items_owned
+  separate_rows(items_owned, sep = ";") %>%
+  ## if there were no items listed, changing NA to no_listed_items
+  replace_na(list(items_owned = "no_listed_items")) %>%
+  mutate(items_owned_logical = TRUE) %>%
+  pivot_wider(names_from = items_owned, 
+              values_from = items_owned_logical, 
+              values_fill = list(items_owned_logical = FALSE)) %>%
+  ## pivot wider by months_lack_food
+  separate_rows(months_lack_food, sep = ";") %>%
+  mutate(months_lack_food_logical = TRUE) %>%
+  pivot_wider(names_from = months_lack_food, 
+              values_from = months_lack_food_logical, 
+              values_fill = list(months_lack_food_logical = FALSE)) %>%
+  ## add some summary columns
+  mutate(number_months_lack_food = rowSums(select(., Jan:May))) %>%
+  mutate(number_items = rowSums(select(., bicycle:car)))
+```
+
+
+Exercise
+
+Create a new code chunk for the plot, and copy the code from any of the plots we created in the previous episode to produce a plot in the chunk. I recommend one of the colourful plots.
+
+If you are feeling adventurous, you can also create a new plot with the interviews_plotting data frame.
+
+create a caption with the chunk option fig.cap.
+
+```{r plot, fig.cap = "I made this plot while attending an awesome Data Carpentries workshop where I learned a ton of cool stuff!"}
+interviews_plotting %>%
+  ggplot(aes(x = respondent_wall_type)) +
+  geom_bar(aes(fill = village), position = "dodge") + 
+  labs(x = "Type of Wall in Home", y = "Count", fill = "Village Name") +
+  scale_fill_viridis_d() # add colour deficient friendly palette
+```
