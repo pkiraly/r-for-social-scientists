@@ -86,12 +86,18 @@ interviews_ch <- select(filter(interviews, village == "Chirodzo"),
 
 #' pipes
 #' %>% (via the magrittr package) (https://en.wikipedia.org/wiki/The_Treachery_of_Images)
+#' |> (native R pipe)
 #' CTRL + SHIFT + M (Mac: Cmd + SHIFT + M)
 #' read the pipe like the word “then”.
 
 interviews %>%
   filter(village == "Chirodzo") %>%
   select(village:respondent_wall_type)
+
+#' or with the "native pipe":
+# interviews |>
+#   filter(village == "Chirodzo") |>
+#   select(village:respondent_wall_type)
 
 #' assign the result
 interviews_ch <- interviews %>%
@@ -111,17 +117,20 @@ interviews_ch
 interviews %>%
   mutate(people_per_room = no_membrs / rooms)
 
+#' To remove NULL cases
 interviews %>%
   filter(!is.na(memb_assoc)) %>%
   mutate(people_per_room = no_membrs / rooms)
 
 #' Exercise
-#' Create a new dataframe from the interviews data that meets the following criteria:
-#' contains only the village column and a new column called total_meals containing a 
-#' value that is equal to the total number of meals served in the household per day 
-#' on average (no_membrs times no_meals). Only the rows where total_meals is greater 
-#' than 20 should be shown in the final dataframe.
-#' Hint: think about how the commands should be ordered to produce this data frame!
+#' Create a new dataframe from the interviews data that meets the following 
+#' criteria: contains only the village column and a new column called 
+#' total_meals containing a value that is equal to the total number of meals
+#' served in the household per day on average (no_membrs times no_meals).
+#' Only the rows where total_meals is greater than 20 should be shown 
+#' in the final dataframe.
+#' Hint: think about how the commands should be ordered to produce this data
+#' frame!
 
 #' Split-apply-combine data analysis and the summarize() function
 #' the split-apply-combine paradigm:
@@ -130,6 +139,7 @@ interviews %>%
 #' - combine the results
 #' group_by()
 
+#' The summarize() function
 interviews %>%
   group_by(village) %>%
   summarize(mean_no_membrs = mean(no_membrs))
@@ -139,7 +149,7 @@ interviews %>%
   group_by(village, memb_assoc) %>%
   summarize(mean_no_membrs = mean(no_membrs))
 
-#'   ungroup()
+#' ungroup()
 interviews %>%
   group_by(village, memb_assoc) %>%
   summarize(mean_no_membrs = mean(no_membrs)) %>%
@@ -158,7 +168,7 @@ interviews %>%
   summarize(mean_no_membrs = mean(no_membrs),
             min_membrs = min(no_membrs))
 
-#' sort
+#' sort the result with arrange()
 interviews %>%
   filter(!is.na(memb_assoc)) %>%
   group_by(village, memb_assoc) %>%
@@ -166,7 +176,7 @@ interviews %>%
             min_membrs = min(no_membrs)) %>%
   arrange(min_membrs)
 
-#' reverse sort
+#' reverse sort with desc()
 interviews %>%
   filter(!is.na(memb_assoc)) %>%
   group_by(village, memb_assoc) %>%
@@ -174,62 +184,21 @@ interviews %>%
             min_membrs = min(no_membrs)) %>%
   arrange(desc(min_membrs))
 
-#' Counting
+#' Counting with count()
 interviews %>%
   count(village)
 
-# with sort
+# count with sorting
 interviews %>%
   count(village, sort = TRUE)
 
 #' Exercise
-#' 1. How many households in the survey have an average of two meals per day? Three meals
-#'    per day? Are there any other numbers of meals represented?
+#' 1. How many households in the survey have an average of two meals per day?
+#'    Three meals per day? Are there any other numbers of meals represented?
 #'    
-#' 2. Use group_by() and summarize() to find the mean, min, and max number of household
-#'    members for each village. Also add the number of observations (hint: see ?n).
+#' 2. Use group_by() and summarize() to find the mean, min, and max number
+#'    of household members for each village. Also add the number of 
+#'    observations (hint: see ?n).
 #'
 #' 3. What was the largest household interviewed in each month?
 
-#' Reshaping with pivot_wider() and pivot_longer()
-#' There are essentially three rules that define a “tidy” dataset:
-#' 1. Each variable has its own column
-#' 2. Each observation has its own row
-#' 3. Each value must have its own cell
-
-#' Long and wide data formats
-interviews %>%
-  select(key_ID, village, interview_date, instanceID)
-
-#'  “long” data format, where each observation occupies only one row in the dataframe.
-interviews %>%
-  filter(village == "Chirodzo") %>%
-  select(key_ID, village, interview_date, instanceID) %>%
-  sample_n(size = 10)
-
-#' “wide” data format we see modifications to rule 1, where each column no longer 
-#' represents a single variable. Instead, columns can represent different levels/values
-#' of a variable. For instance, in some data you encounter the researchers may have chosen
-#' for every survey date to be a different column.
-
-#' pivot_wider()
-interviews_wide <- interviews %>%
-  mutate(wall_type_logical = TRUE) %>%
-  pivot_wider(names_from = respondent_wall_type,
-              values_from = wall_type_logical,
-              values_fill = list(wall_type_logical = FALSE))
-interviews_wide
-
-#' pivot_longer()
-interviews_long <- interviews_wide %>%
-  pivot_longer(cols = burntbricks:sunbricks,
-               names_to = "respondent_wall_type",
-               values_to = "wall_type_logical")
-view(interviews_long)
-
-interviews_long <- interviews_wide %>%
-  pivot_longer(cols = c(burntbricks, cement, muddaub, sunbricks),
-               names_to = "respondent_wall_type",
-               values_to = "wall_type_logical") %>%
-  filter(wall_type_logical) %>%
-  select(-wall_type_logical)
